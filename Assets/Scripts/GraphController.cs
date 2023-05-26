@@ -5,8 +5,9 @@ using UnityEngine;
 public class Graph : MonoBehaviour
 {
     // grid
+    [Range(0, 1)] [SerializeField] float padding;
     [SerializeField] int xSize;
-    [SerializeField] int ySize;
+    int ySize;
     [SerializeField] float increment;
     [SerializeField] GameObject verticePrefab;
     // graph
@@ -19,6 +20,11 @@ public class Graph : MonoBehaviour
         {
             adjList[i] = new LinkedList<int>();
         }
+    }
+
+    private void Start()
+    {
+        initGrid();
     }
 
     public void addEdge(int source, int destination)
@@ -44,15 +50,26 @@ public class Graph : MonoBehaviour
 
     void initGrid()
     {
+        // y axis is 50% larger than x axis
+        ySize = Mathf.FloorToInt(xSize * 1.5f);
+        Camera mainCamera = Camera.main;
+        // calculate available screen dimensions (remove padding)
+        float screenHeightInUnits = mainCamera.orthographicSize * 2f * (1- padding);
+        float screenWidthInUnits = screenHeightInUnits * mainCamera.aspect * (1 - padding);
+        //calculate distance between vertices
+        increment = screenWidthInUnits / xSize;
+
+        //create grid
         for (int x = 0; x < xSize; x++)
         {
             for (int y = 0; y < ySize; y++)
             {
-                GameObject newEdge = Instantiate(verticePrefab, new Vector3(x / increment, y / increment, 0f), Quaternion.identity);
-                newEdge.transform.parent = gameObject.transform;
+                GameObject newVertice = Instantiate(verticePrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
+                //vertices are children of the graph
+                newVertice.transform.parent = gameObject.transform;
             }
         }
-        gameObject.transform.position = new Vector3((transform.position.x - xSize / (2 * increment)) + 0.5f * (1 / increment), transform.position.y, transform.position.z);
-
+        //move the graph so that it centers the screen
+        gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
     }
 }

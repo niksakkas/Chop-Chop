@@ -396,7 +396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36c9e3a3c156e2e429113960d0e5fe10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  padding: 0.1
   xSize: 10
-  ySize: 15
   increment: 2
-  edgePrefab: {fileID: 7203229841943554538, guid: c8253f418b7d305469d6f0b8cf25af08, type: 3}
+  verticePrefab: {fileID: 7203229841943554538, guid: c8253f418b7d305469d6f0b8cf25af08, type: 3}
