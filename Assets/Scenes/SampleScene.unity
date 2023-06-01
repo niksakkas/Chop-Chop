@@ -393,10 +393,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1378528791}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36c9e3a3c156e2e429113960d0e5fe10, type: 3}
+  m_Script: {fileID: 11500000, guid: b646efd5fe883e944b056bdce353af64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  padding: 0.1
+  padding: 0
   xSize: 10
-  increment: 2
+  numOfVertices: 150
   verticePrefab: {fileID: 7203229841943554538, guid: c8253f418b7d305469d6f0b8cf25af08, type: 3}

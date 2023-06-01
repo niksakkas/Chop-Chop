@@ -2,53 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Graph : MonoBehaviour
+public class GraphController : MonoBehaviour
 {
     // grid
     [Range(0, 1)] [SerializeField] float padding;
     [SerializeField] int xSize;
     int ySize;
-    [SerializeField] float increment;
+    [SerializeField] int numOfVertices;
+    float increment;
     [SerializeField] GameObject verticePrefab;
     // graph
-    int vertices;
-    LinkedList<int>[] adjList;
-   
-    Graph() {
-        adjList = new LinkedList<int>[vertices];
-        for (int i = 0; i < vertices; i++)
-        {
-            adjList[i] = new LinkedList<int>();
-        }
-    }
+    LinkedList<Vertice>[] graph;
+
 
     private void Start()
     {
-        initGrid();
+        initGraph();
     }
 
-    public void addEdge(int source, int destination)
-    {
-        //forward edge
-        adjList[source].AddFirst(destination);
-        //backward edge in undirected graph
-        adjList[destination].AddFirst(source);
-    }
-    public void removeEdge(int source, int destination)
-    {
-        //remove forward edge
-        for (int i = 0; i < adjList[source].Count; i++)
-        {
-                adjList[source].Remove(destination);
-        }
-        //remove backward edge in undirected graph
-        for (int i = 0; i < adjList[destination].Count; i++)
-        {
-            adjList[destination].Remove(source);
-        }
-    }
-
-    void initGrid()
+    void initGraph()
     {
         // y axis is 50% larger than x axis
         ySize = Mathf.FloorToInt(xSize * 1.5f);
@@ -58,18 +30,50 @@ public class Graph : MonoBehaviour
         float screenWidthInUnits = screenHeightInUnits * mainCamera.aspect * (1 - padding);
         //calculate distance between vertices
         increment = screenWidthInUnits / xSize;
-
-        //create grid
-        for (int x = 0; x < xSize; x++)
-        {
-            for (int y = 0; y < ySize; y++)
-            {
-                GameObject newVertice = Instantiate(verticePrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
-                //vertices are children of the graph
-                newVertice.transform.parent = gameObject.transform;
-            }
-        }
-        //move the graph so that it centers the screen
+        //get the positions that the vertices will be created at
+        int[] verticePositions = getVerticePositions();
+        //create the vertices
+        createVertices(verticePositions);
+        //move the graph to the correct position
         gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
     }
+
+    int[] getVerticePositions()
+    {
+        if(xSize * ySize < numOfVertices)
+        {
+            Debug.LogError("Cant add more vertices than graph size");
+            return null;
+        }
+        // Create a list to store the generated numbers
+        var randomNumbers = new System.Collections.Generic.List<int>();
+        // Generate five different random numbers
+        for (int i = 0; i < numOfVertices; i++)
+        {
+            int randomNumber;
+            // Generate a new random number and check if it already exists in the list
+            do
+            {
+                randomNumber = Random.Range(0, xSize*ySize);
+            } while (randomNumbers.Contains(randomNumber));
+            // Add the unique random number to the list
+            randomNumbers.Add(randomNumber);
+            // Display the generated number
+                 }
+        return randomNumbers.ToArray();
+
+    }
+    
+    void createVertices(int[] verticePositions)
+    {
+        for (int i = 0; i < verticePositions.Length; i++)
+        {
+            int x = verticePositions[i] % xSize;
+            int y = verticePositions[i] / ySize;
+            GameObject newVertice = Instantiate(verticePrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
+            //vertices are children of the graph
+            newVertice.transform.parent = gameObject.transform;
+        }
+    }
+
 }
