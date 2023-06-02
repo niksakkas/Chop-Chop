@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GraphController : MonoBehaviour
 {
@@ -12,7 +14,7 @@ public class GraphController : MonoBehaviour
     float increment;
     [SerializeField] GameObject verticePrefab;
     // graph
-    LinkedList<Vertice>[] graph;
+    List<Vertex> graph = new List<Vertex>();
 
 
     private void Start()
@@ -36,6 +38,7 @@ public class GraphController : MonoBehaviour
         createVertices(verticePositions);
         //move the graph to the correct position
         gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
+        //create the edges
     }
 
     int[] getVerticePositions()
@@ -54,7 +57,7 @@ public class GraphController : MonoBehaviour
             // Generate a new random number and check if it already exists in the list
             do
             {
-                randomNumber = Random.Range(0, xSize*ySize);
+                randomNumber = UnityEngine.Random.Range(0, xSize*ySize);
             } while (randomNumbers.Contains(randomNumber));
             // Add the unique random number to the list
             randomNumbers.Add(randomNumber);
@@ -63,17 +66,36 @@ public class GraphController : MonoBehaviour
         return randomNumbers.ToArray();
 
     }
-    
     void createVertices(int[] verticePositions)
     {
         for (int i = 0; i < verticePositions.Length; i++)
         {
-            int x = verticePositions[i] % xSize;
-            int y = verticePositions[i] / ySize;
-            GameObject newVertice = Instantiate(verticePrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
-            //vertices are children of the graph
-            newVertice.transform.parent = gameObject.transform;
+            createVertex(verticePositions[i]);
         }
     }
-
+    void createVertex(int verticeID)
+    {
+        int x = verticeID % xSize;
+        int y = verticeID / ySize;
+        GameObject newVerticeGameObject = Instantiate(verticePrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
+        //vertices are children of the graph
+        newVerticeGameObject.transform.parent = gameObject.transform;
+        Vertex newVertex = new Vertex(verticeID, newVerticeGameObject);
+        graph.Add(newVertex);        
+    }
+    void createEdges()
+    {
+        // Iterating through the graph using foreach loop
+        foreach (Vertex vertex in graph)
+        {
+            int randomIndex = UnityEngine.Random.Range(0, graph.Count);
+            Vertex randomVertex = graph[randomIndex];
+            createEdge(vertex, randomVertex);
+        }
+    }
+    void createEdge(Vertex vertexA, Vertex vertexB)
+    {
+        vertexA.neighbours.Add(vertexB);
+        vertexB.neighbours.Add(vertexB);
+    }
 }
