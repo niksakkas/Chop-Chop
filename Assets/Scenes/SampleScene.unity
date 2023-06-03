@@ -398,5 +398,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   padding: 0
   xSize: 10
-  numOfVertices: 120
+  numOfVertices: 5
   verticePrefab: {fileID: 7203229841943554538, guid: c8253f418b7d305469d6f0b8cf25af08, type: 3}

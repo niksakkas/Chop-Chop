@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class GraphController : MonoBehaviour
 {
@@ -32,13 +33,14 @@ public class GraphController : MonoBehaviour
         float screenWidthInUnits = screenHeightInUnits * mainCamera.aspect * (1 - padding);
         //calculate distance between vertices
         increment = screenWidthInUnits / xSize;
-        //get the positions that the vertices will be created at
+        //get the positions that the vertices will be created at, then create the vertices
         int[] verticePositions = getVerticePositions();
-        //create the vertices
         createVertices(verticePositions);
         //move the graph to the correct position
         gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
         //create the edges
+        createEdges();
+        logGraph();
     }
 
     int[] getVerticePositions()
@@ -96,6 +98,13 @@ public class GraphController : MonoBehaviour
     void createEdge(Vertex vertexA, Vertex vertexB)
     {
         vertexA.neighbours.Add(vertexB);
-        vertexB.neighbours.Add(vertexB);
+        vertexB.neighbours.Add(vertexA);
+    }
+    void logGraph()
+    {
+        graph.ForEach(vertex =>
+        {
+            Debug.Log(vertex.id + ": " + string.Join(", ", vertex.neighbours.Select(vertex => vertex.id)));
+        });
     }
 }

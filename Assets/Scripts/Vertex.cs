@@ -13,6 +13,7 @@ public class Vertex
     {
         id = _id;
         vertex = _vertex;
+        neighbours = new HashSet<Vertex>();
     }
 
 }
