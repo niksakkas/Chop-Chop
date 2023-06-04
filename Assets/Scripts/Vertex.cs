@@ -5,16 +5,14 @@ using UnityEngine;
 public class Vertex
 {
     public int id { get; set; }
-    GameObject vertex { get; set; }
+    public GameObject gameobject { get; set; }
     public HashSet<Vertex> neighbours;
 
 
-    public Vertex(int _id, GameObject _vertex)
+    public Vertex(int _id, GameObject _gameobject)
     {
         id = _id;
-        vertex = _vertex;
+        gameobject = _gameobject;
         neighbours = new HashSet<Vertex>();
     }
-
 }
-

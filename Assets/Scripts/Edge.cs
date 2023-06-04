@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Vertice : MonoBehaviour
+public class Edge : MonoBehaviour
 {
-    public Vector2 position;
-    public LinkedList<Vertice> connectedVertices;
+    public Vertex start { get; set; }
+    public Vertex end { get; set; }
+    public GameObject lineObject { get; set; }
+
+    
 }

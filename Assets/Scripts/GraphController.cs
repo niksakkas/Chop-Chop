@@ -40,7 +40,7 @@ public class GraphController : MonoBehaviour
         gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
         //create the edges
         createEdges();
-        logGraph();
+        //logGraph();
     }
 
     int[] getVerticePositions()
@@ -91,6 +91,10 @@ public class GraphController : MonoBehaviour
         foreach (Vertex vertex in graph)
         {
             int randomIndex = UnityEngine.Random.Range(0, graph.Count);
+            while(graph[randomIndex] == vertex || vertex.neighbours.Contains(graph[randomIndex]))
+            {
+                randomIndex = UnityEngine.Random.Range(0, graph.Count);
+            }
             Vertex randomVertex = graph[randomIndex];
             createEdge(vertex, randomVertex);
         }
@@ -99,12 +103,26 @@ public class GraphController : MonoBehaviour
     {
         vertexA.neighbours.Add(vertexB);
         vertexB.neighbours.Add(vertexA);
+        createLine(vertexA.gameobject.transform.position, vertexB.gameobject.transform.position);
+    }
+    void createLine(Vector3 startPosition, Vector2 endPosition)
+    {
+
+        Color lineColor = Color.black;
+
+        GameObject lineObject = new GameObject("Line");
+        LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startWidth = 0.05f;
+        lineRenderer.endWidth = 0.05f;
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, startPosition);
+        lineRenderer.SetPosition(1, endPosition);
+        lineRenderer.startColor = lineColor;
+        lineRenderer.endColor = lineColor;
     }
     void logGraph()
     {
-        graph.ForEach(vertex =>
-        {
-            Debug.Log(vertex.id + ": " + string.Join(", ", vertex.neighbours.Select(vertex => vertex.id)));
-        });
+        graph.ForEach(vertex => Debug.Log(vertex.id + ": " + string.Join(", ", vertex.neighbours.Select(vertex => vertex.id))));
     }
 }
