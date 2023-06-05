@@ -15,7 +15,7 @@ public class GraphController : MonoBehaviour
     float increment;
     [SerializeField] GameObject verticePrefab;
     // graph
-    List<Vertex> graph = new List<Vertex>();
+    List<Vertex> vertices = new List<Vertex>();
 
 
     private void Start()
@@ -83,19 +83,19 @@ public class GraphController : MonoBehaviour
         //vertices are children of the graph
         newVerticeGameObject.transform.parent = gameObject.transform;
         Vertex newVertex = new Vertex(verticeID, newVerticeGameObject);
-        graph.Add(newVertex);        
+        vertices.Add(newVertex);        
     }
     void createEdges()
     {
         // Iterating through the graph using foreach loop
-        foreach (Vertex vertex in graph)
+        foreach (Vertex vertex in vertices)
         {
-            int randomIndex = UnityEngine.Random.Range(0, graph.Count);
-            while(graph[randomIndex] == vertex || vertex.neighbours.Contains(graph[randomIndex]))
+            int randomIndex = UnityEngine.Random.Range(0, vertices.Count);
+            while(vertices[randomIndex] == vertex || vertex.neighbours.Contains(vertices[randomIndex]))
             {
-                randomIndex = UnityEngine.Random.Range(0, graph.Count);
+                randomIndex = UnityEngine.Random.Range(0, vertices.Count);
             }
-            Vertex randomVertex = graph[randomIndex];
+            Vertex randomVertex = vertices[randomIndex];
             createEdge(vertex, randomVertex);
         }
     }
@@ -103,9 +103,10 @@ public class GraphController : MonoBehaviour
     {
         vertexA.neighbours.Add(vertexB);
         vertexB.neighbours.Add(vertexA);
-        createLine(vertexA.gameobject.transform.position, vertexB.gameobject.transform.position);
+        GameObject newLine = createLine(vertexA.gameobject.transform.position, vertexB.gameobject.transform.position);
+
     }
-    void createLine(Vector3 startPosition, Vector2 endPosition)
+    GameObject createLine(Vector3 startPosition, Vector2 endPosition)
     {
 
         Color lineColor = Color.black;
@@ -120,9 +121,11 @@ public class GraphController : MonoBehaviour
         lineRenderer.SetPosition(1, endPosition);
         lineRenderer.startColor = lineColor;
         lineRenderer.endColor = lineColor;
+
+        return lineObject;
     }
     void logGraph()
     {
-        graph.ForEach(vertex => Debug.Log(vertex.id + ": " + string.Join(", ", vertex.neighbours.Select(vertex => vertex.id))));
+        vertices.ForEach(vertex => Debug.Log(vertex.id + ": " + string.Join(", ", vertex.neighbours.Select(vertex => vertex.id))));
     }
 }
