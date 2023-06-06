@@ -41,7 +41,7 @@ public class GraphController : MonoBehaviour
         gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
         // Create the edges
         createEdges();
-        logGraph();
+        //logGraph();
     }
 
     int[] getVerticePositions()
@@ -79,7 +79,8 @@ public class GraphController : MonoBehaviour
         }
     }
     void createVertex(int verticeID)
-    {
+    {   
+        // Calculate new vertex position
         int x = verticeID % xSize;
         int y = verticeID / ySize;
         GameObject newVerticeGameObject = Instantiate(vertexPrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
@@ -120,7 +121,6 @@ public class GraphController : MonoBehaviour
         vertexA.GetComponent<Vertex>().addEdge(newEdgeGameObject);
         vertexB.GetComponent<Vertex>().addEdge(newEdgeGameObject);
     }
-
     void logGraph()
     {
         // For every vertice
