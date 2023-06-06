@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 83397856232526656}
   - component: {fileID: 5833055812901558294}
+  - component: {fileID: -1496111321442301391}
   m_Layer: 0
-  m_Name: Vertice
+  m_Name: Vertex
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,3 +85,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-1496111321442301391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7203229841943554538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0129c7e74ffe6c641bc53e714b4cbb78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

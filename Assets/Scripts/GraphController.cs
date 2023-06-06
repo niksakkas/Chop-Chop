@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class GraphController : MonoBehaviour
 {
@@ -13,9 +11,12 @@ public class GraphController : MonoBehaviour
     int ySize;
     [SerializeField] int numOfVertices;
     float increment;
-    [SerializeField] GameObject verticePrefab;
+    // prefabs
+    [SerializeField] GameObject vertexPrefab;
+    [SerializeField] GameObject edgePrefab;
+
     // graph
-    List<Vertex> vertices = new List<Vertex>();
+    List<GameObject> vertices = new List<GameObject>();
 
 
     private void Start()
@@ -28,26 +29,26 @@ public class GraphController : MonoBehaviour
         // y axis is 50% larger than x axis
         ySize = Mathf.FloorToInt(xSize * 1.5f);
         Camera mainCamera = Camera.main;
-        // calculate available screen dimensions (remove padding)
+        // Calculate available screen dimensions (remove padding)
         float screenHeightInUnits = mainCamera.orthographicSize * 2f * (1- padding);
         float screenWidthInUnits = screenHeightInUnits * mainCamera.aspect * (1 - padding);
-        //calculate distance between vertices
+        // Calculate distance between vertices
         increment = screenWidthInUnits / xSize;
-        //get the positions that the vertices will be created at, then create the vertices
+        // Get the positions that the vertices will be created at, then create the vertices
         int[] verticePositions = getVerticePositions();
         createVertices(verticePositions);
-        //move the graph to the correct position
+        // Move the graph to the correct position
         gameObject.transform.position = new Vector3(transform.position.x - screenWidthInUnits/2 + increment/2, transform.position.y - ((ySize - xSize) * increment), transform.position.z);
-        //create the edges
+        // Create the edges
         createEdges();
-        //logGraph();
+        logGraph();
     }
 
     int[] getVerticePositions()
     {
         if(xSize * ySize < numOfVertices)
         {
-            Debug.LogError("Cant add more vertices than graph size");
+            Debug.LogError("Cant add more vertices than the graph size");
             return null;
         }
         // Create a list to store the generated numbers
@@ -60,13 +61,15 @@ public class GraphController : MonoBehaviour
             do
             {
                 randomNumber = UnityEngine.Random.Range(0, xSize*ySize);
-            } while (randomNumbers.Contains(randomNumber));
+            } 
+            while (randomNumbers.Contains(randomNumber));
             // Add the unique random number to the list
             randomNumbers.Add(randomNumber);
             // Display the generated number
                  }
-        return randomNumbers.ToArray();
-
+        int[] positions = randomNumbers.ToArray();
+        Array.Sort(positions);
+        return positions;
     }
     void createVertices(int[] verticePositions)
     {
@@ -79,53 +82,62 @@ public class GraphController : MonoBehaviour
     {
         int x = verticeID % xSize;
         int y = verticeID / ySize;
-        GameObject newVerticeGameObject = Instantiate(verticePrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
-        //vertices are children of the graph
+        GameObject newVerticeGameObject = Instantiate(vertexPrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
+        newVerticeGameObject.GetComponent<Vertex>().Id = verticeID;
+        newVerticeGameObject.GetComponent<Vertex>().Edges = new HashSet<GameObject>();
+        // Vertices are children of the graph
         newVerticeGameObject.transform.parent = gameObject.transform;
-        Vertex newVertex = new Vertex(verticeID, newVerticeGameObject);
-        vertices.Add(newVertex);        
+        // Vertex newVertex = new Vertex(verticeID, newVerticeGameObject);
+        vertices.Add(newVerticeGameObject);
     }
     void createEdges()
     {
         // Iterating through the graph using foreach loop
-        foreach (Vertex vertex in vertices)
+        foreach (GameObject vertex in vertices)
         {
             int randomIndex = UnityEngine.Random.Range(0, vertices.Count);
-            while(vertices[randomIndex] == vertex || vertex.neighbours.Contains(vertices[randomIndex]))
+            while(vertices[randomIndex] == vertex || vertex.GetComponent<Vertex>().Edges.Any(edge => edge.GetComponent<Edge>().StartVertex == vertices[randomIndex] || edge.GetComponent<Edge>().EndVertex == vertices[randomIndex]))
             {
                 randomIndex = UnityEngine.Random.Range(0, vertices.Count);
             }
-            Vertex randomVertex = vertices[randomIndex];
+            GameObject randomVertex = vertices[randomIndex];
             createEdge(vertex, randomVertex);
         }
     }
-    void createEdge(Vertex vertexA, Vertex vertexB)
+    void createEdge(GameObject vertexA, GameObject vertexB)
     {
-        vertexA.neighbours.Add(vertexB);
-        vertexB.neighbours.Add(vertexA);
-        GameObject newLine = createLine(vertexA.gameobject.transform.position, vertexB.gameobject.transform.position);
-
+        //Create edge
+        GameObject newEdgeGameObject = Instantiate(edgePrefab);
+        Edge newEdge = newEdgeGameObject.GetComponent<Edge>();
+        newEdge.transform.parent = gameObject.transform;
+        newEdge.StartVertex = vertexA;
+        newEdge.EndVertex = vertexB;
+        // Create edge's line
+        LineRenderer lineRenderer = newEdgeGameObject.GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, vertexA.transform.position);
+        lineRenderer.SetPosition(1, vertexB.transform.position);
+        // Add edge to vertices hashSets
+        vertexA.GetComponent<Vertex>().addEdge(newEdgeGameObject);
+        vertexB.GetComponent<Vertex>().addEdge(newEdgeGameObject);
     }
-    GameObject createLine(Vector3 startPosition, Vector2 endPosition)
-    {
 
-        Color lineColor = Color.black;
-
-        GameObject lineObject = new GameObject("Line");
-        LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, startPosition);
-        lineRenderer.SetPosition(1, endPosition);
-        lineRenderer.startColor = lineColor;
-        lineRenderer.endColor = lineColor;
-
-        return lineObject;
-    }
     void logGraph()
     {
-        vertices.ForEach(vertex => Debug.Log(vertex.id + ": " + string.Join(", ", vertex.neighbours.Select(vertex => vertex.id))));
+        // For every vertice
+        vertices.ForEach(vertex =>
+        {
+            Vertex vertexScript = vertex.GetComponent<Vertex>();
+            // Get vertice id
+            int vertexId = vertexScript.Id;
+            // Get all pairs of the edges of that vertice
+            string neighbours = "";
+            foreach (GameObject edge in vertexScript.Edges)
+            {
+                Edge edgeScript = edge.GetComponent<Edge>();
+                neighbours += "(" + edgeScript.StartVertex.GetComponent<Vertex>().Id.ToString() + ", " + edgeScript.EndVertex.GetComponent<Vertex>().Id.ToString() + ") ";
+            }
+            // Print them vertice by vertice
+            Debug.Log(vertexId +": "+ neighbours);
+        });
     }
 }

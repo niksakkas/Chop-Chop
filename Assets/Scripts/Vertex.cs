@@ -2,17 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vertex
+public class Vertex : MonoBehaviour
 {
-    public int id { get; set; }
-    public GameObject gameobject { get; set; }
-    public HashSet<Vertex> neighbours;
+    [SerializeField]
+    private int id;
 
+    [SerializeField]
+    private HashSet<GameObject> edges;
 
-    public Vertex(int _id, GameObject _gameobject)
+    public int Id
     {
-        id = _id;
-        gameobject = _gameobject;
-        neighbours = new HashSet<Vertex>();
+        get { return id; }
+        set { id = value; }
+    }
+
+    public HashSet<GameObject> Edges
+    {
+        get { return edges; }
+        set { edges = value; }
+    }
+
+    public void addEdge(GameObject newEdge)
+    {
+        edges.Add(newEdge);
     }
 }

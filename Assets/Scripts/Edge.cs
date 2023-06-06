@@ -1,17 +1,22 @@
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Edge : MonoBehaviour
 {
-    public Vertex start { get; set; }
-    public Vertex end { get; set; }
-    public GameObject lineObject { get; set; }
+    [SerializeField]
+    private GameObject startVertex;
 
-    public Edge(Vertex _start, Vertex _end, GameObject _lineObject)
+    [SerializeField]
+    private GameObject endVertex;
+
+    public GameObject StartVertex
     {
-        start = _start;
-        end = _end;
-        lineObject = _lineObject;
+        get { return startVertex; }
+        set { startVertex = value; }
+    }
+
+    public GameObject EndVertex
+    {
+        get { return endVertex; }
+        set { endVertex = value; }
     }
 }
