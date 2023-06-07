@@ -73,7 +73,7 @@ public class DragController : MonoBehaviour
     // Drag Object
     private void Drag()
     {
-        _lastDragged.Move(new Vector2(_worldPosition.x, _worldPosition.y));
+        _lastDragged.PlayerDragging(new Vector2(_worldPosition.x, _worldPosition.y));
     }
     // Start Dragging
     private void Drop()
