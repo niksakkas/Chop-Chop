@@ -7,6 +7,7 @@ public class Vertex : MonoBehaviour
     [SerializeField] private int id;
     [SerializeField] private HashSet<GameObject> edges;
 
+
     public int Id
     {
         get { return id; }

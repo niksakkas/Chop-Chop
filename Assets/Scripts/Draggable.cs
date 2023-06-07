@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class Draggable : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Move(Vector2 newPos)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        gameObject.transform.position = newPos;
     }
 }

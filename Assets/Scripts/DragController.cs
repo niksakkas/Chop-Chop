@@ -1,19 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DragController : MonoBehaviour
 {
+    private static DragController _instance;
     private bool _isDragActive = false;
-
     private Vector2 _screenPosition;
     private Vector3 _worldPosition;
     private Draggable _lastDragged;
 
-    void Awake()
+    public static DragController Instance
     {
-
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<DragController>();
+            }
+            return _instance;
+        }
     }
+
     void Update()
     {
         if (_isDragActive && (Input.GetMouseButtonUp(0) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended)))
@@ -53,14 +62,20 @@ public class DragController : MonoBehaviour
             }
         }
     }
+
+    /* Dragging/Dropping methods */
+    
+    // Start Dragging
     private void InitDrag()
     {
         _isDragActive = true;
     }
+    // Drag Object
     private void Drag()
     {
-        _lastDragged.gameObject.transform.position = new Vector2(_worldPosition.x, _worldPosition.y);
+        _lastDragged.Move(new Vector2(_worldPosition.x, _worldPosition.y));
     }
+    // Start Dragging
     private void Drop()
     {
         _isDragActive = false;
