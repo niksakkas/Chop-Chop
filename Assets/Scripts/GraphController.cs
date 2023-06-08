@@ -14,6 +14,8 @@ public class GraphController : MonoBehaviour
     // prefabs
     [SerializeField] GameObject vertexPrefab;
     [SerializeField] GameObject edgePrefab;
+    [SerializeField] GameObject verticesParent;
+    [SerializeField] GameObject edgesParent;
 
     // graph
     List<GameObject> vertices = new List<GameObject>();
@@ -34,6 +36,7 @@ public class GraphController : MonoBehaviour
         float screenWidthInUnits = screenHeightInUnits * mainCamera.aspect * (1 - padding);
         // Calculate distance between vertices
         increment = screenWidthInUnits / xSize;
+        Debug.Log(increment);
         // Get the positions that the vertices will be created at, then create the vertices
         int[] verticePositions = getVerticePositions();
         createVertices(verticePositions);
@@ -83,11 +86,12 @@ public class GraphController : MonoBehaviour
         // Calculate new vertex position
         int x = verticeID % xSize;
         int y = verticeID / ySize;
+        Debug.Log(verticeID + " " + x * increment + " " + y * increment);
         GameObject newVerticeGameObject = Instantiate(vertexPrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
         newVerticeGameObject.GetComponent<Vertex>().Id = verticeID;
         newVerticeGameObject.GetComponent<Vertex>().Edges = new HashSet<GameObject>();
         // Vertices are children of the graph
-        newVerticeGameObject.transform.parent = gameObject.transform;
+        newVerticeGameObject.transform.parent = verticesParent.transform;
         // Vertex newVertex = new Vertex(verticeID, newVerticeGameObject);
         vertices.Add(newVerticeGameObject);
     }
@@ -110,7 +114,7 @@ public class GraphController : MonoBehaviour
         //Create edge
         GameObject newEdgeGameObject = Instantiate(edgePrefab);
         Edge newEdge = newEdgeGameObject.GetComponent<Edge>();
-        newEdge.transform.parent = gameObject.transform;
+        newEdge.transform.parent = edgesParent.transform;
         newEdge.StartVertex = vertexA;
         newEdge.EndVertex = vertexB;
         // Create edge's line

@@ -435,6 +435,8 @@ MonoBehaviour:
   numOfVertices: 20
   vertexPrefab: {fileID: 7203229841943554538, guid: c8253f418b7d305469d6f0b8cf25af08, type: 3}
   edgePrefab: {fileID: 814295287154197503, guid: 24dbae35cac2a3149b0e025ebe37599e, type: 3}
+  verticesParent: {fileID: 1670452507}
+  edgesParent: {fileID: 1044975528}
 --- !u!1 &1670452507
 GameObject:
   m_ObjectHideFlags: 0
