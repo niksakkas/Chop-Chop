@@ -36,7 +36,6 @@ public class GraphController : MonoBehaviour
         float screenWidthInUnits = screenHeightInUnits * mainCamera.aspect * (1 - padding);
         // Calculate distance between vertices
         increment = screenWidthInUnits / xSize;
-        Debug.Log(increment);
         // Get the positions that the vertices will be created at, then create the vertices
         int[] verticePositions = getVerticePositions();
         createVertices(verticePositions);
@@ -85,8 +84,7 @@ public class GraphController : MonoBehaviour
     {   
         // Calculate new vertex position
         int x = verticeID % xSize;
-        int y = verticeID / ySize;
-        Debug.Log(verticeID + " " + x * increment + " " + y * increment);
+        int y = verticeID / xSize;
         GameObject newVerticeGameObject = Instantiate(vertexPrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
         newVerticeGameObject.GetComponent<Vertex>().Id = verticeID;
         newVerticeGameObject.GetComponent<Vertex>().Edges = new HashSet<GameObject>();
