@@ -25,11 +25,13 @@ public class DragController : MonoBehaviour
 
     void Update()
     {
+        //check if an object was being dragged but the user just stopped dragging. If so, then drop
         if (_isDragActive && (Input.GetMouseButtonUp(0) || (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Ended)))
         {
             Drop();
             return;
         }
+        // Track mouse/touch position if required
         if (Input.GetMouseButton(0))
         {
             Vector3 mousePos = Input.mousePosition;
@@ -38,16 +40,19 @@ public class DragController : MonoBehaviour
         else if (Input.touchCount == 1) { 
             _screenPosition = Input.GetTouch(0).position;
         }
+        // Exit if the user is not dragging
         else
         {
             return;
         }
         _worldPosition = Camera.main.ScreenToWorldPoint(_screenPosition);
 
+        // Drag if _isDragActive is true
         if (_isDragActive == true)
         {
             Drag();
         }
+        // Else, user might just be starting dragging, try to find Draggable object
         else
         {
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(_worldPosition.x, _worldPosition.y), Vector2.zero);

@@ -90,7 +90,6 @@ public class GraphController : MonoBehaviour
         newVerticeGameObject.GetComponent<Vertex>().Edges = new HashSet<GameObject>();
         // Vertices are children of the graph
         newVerticeGameObject.transform.parent = verticesParent.transform;
-        // Vertex newVertex = new Vertex(verticeID, newVerticeGameObject);
         vertices.Add(newVerticeGameObject);
     }
     void createEdges()
