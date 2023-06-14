@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class GraphController : MonoBehaviour
 {
+
+
     // grid
     [Range(0, 1)] [SerializeField] float padding;
     [SerializeField] int xSize;
@@ -20,6 +22,27 @@ public class GraphController : MonoBehaviour
     // graph
     List<GameObject> vertices = new List<GameObject>();
 
+    // Singleton instance
+    private static GraphController _instance;
+
+    // Singleton accessor
+    public static GraphController Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<GraphController>();
+                if (_instance == null)
+                {
+                    GameObject singletonObject = new GameObject();
+                    _instance = singletonObject.AddComponent<GraphController>();
+                    singletonObject.name = typeof(GraphController).ToString() + " (Singleton)";
+                }
+            }
+            return _instance;
+        }
+    }
 
     private void Start()
     {
@@ -129,6 +152,13 @@ public class GraphController : MonoBehaviour
         // Add edge to vertices hashSets
         vertexA.GetComponent<Vertex>().addEdge(newEdgeGameObject);
         vertexB.GetComponent<Vertex>().addEdge(newEdgeGameObject);
+    }
+
+    public void removeEdge(GameObject edge)
+    {
+        edge.GetComponent<Edge>().StartVertex.GetComponent<Vertex>().Edges.Remove(edge);
+        edge.GetComponent<Edge>().EndVertex.GetComponent<Vertex>().Edges.Remove(edge);
+        Destroy(edge);
     }
     void logGraph()
     {

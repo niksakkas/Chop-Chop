@@ -16,4 +16,6 @@ public class Edge : MonoBehaviour
         get { return endVertex; }
         set { endVertex = value; }
     }
+
+
 }

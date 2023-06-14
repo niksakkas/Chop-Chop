@@ -155,6 +155,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
+    Android: com.DefaultCompany.Chop_Chop
     Standalone: com.DefaultCompany.Chop-Chop
   buildNumber:
     Standalone: 0
