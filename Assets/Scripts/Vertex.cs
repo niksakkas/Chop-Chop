@@ -38,6 +38,7 @@ public class Vertex : MonoBehaviour
     public void MoveVertex(Vector2 draggingPosition)
     {
         gameObject.transform.position = draggingPosition;
+        //move all edges
         foreach (GameObject edge in edges)
         {
             MoveEdge(edge, draggingPosition);
@@ -45,15 +46,20 @@ public class Vertex : MonoBehaviour
     }
     public void MoveEdge(GameObject edgeGameObject, Vector2 draggingPosition)
     {
-       LineRenderer lineRenderer = edgeGameObject.GetComponent<LineRenderer>();
-       Edge edge = edgeGameObject.GetComponent<Edge>();
-       if(edge.StartVertex == gameObject)
+        Edge edge = edgeGameObject.GetComponent<Edge>();
+        LineRenderer lineRenderer = edgeGameObject.GetComponent<LineRenderer>();
+        EdgeCollider2D edgeCollider = edgeGameObject.GetComponent<EdgeCollider2D>();
+        Vector2[] points = edgeCollider.points;
+        if (edge.StartVertex == gameObject)
         {
             lineRenderer.SetPosition(0, draggingPosition);
+            points[0] = draggingPosition;
         }
         else
         {
             lineRenderer.SetPosition(1, draggingPosition);
+            points[1] = draggingPosition;
         }
+        edgeCollider.points = points;
     }
 }

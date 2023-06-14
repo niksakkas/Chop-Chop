@@ -2,11 +2,8 @@ using UnityEngine;
 
 public class Edge : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject startVertex;
-
-    [SerializeField]
-    private GameObject endVertex;
+    [SerializeField] private GameObject startVertex;
+    [SerializeField] private GameObject endVertex;
 
     public GameObject StartVertex
     {

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4174479993913655837}
   - component: {fileID: 845329594405231226}
   - component: {fileID: 2992607723052961944}
+  - component: {fileID: 1426338839860124354}
   m_Layer: 0
   m_Name: Edge
   m_TagString: Untagged
@@ -146,3 +147,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startVertex: {fileID: 0}
   endVertex: {fileID: 0}
+--- !u!68 &1426338839860124354
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814295287154197503}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0

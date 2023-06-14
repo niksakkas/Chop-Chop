@@ -118,6 +118,14 @@ public class GraphController : MonoBehaviour
         LineRenderer lineRenderer = newEdgeGameObject.GetComponent<LineRenderer>();
         lineRenderer.SetPosition(0, vertexA.transform.position);
         lineRenderer.SetPosition(1, vertexB.transform.position);
+        // Create edge's collider
+        EdgeCollider2D edgeCollider = newEdge.GetComponent<EdgeCollider2D>();
+        Vector2[] points = new Vector2[]
+        {
+            vertexA.transform.position, 
+            vertexB.transform.position,
+        };
+        edgeCollider.points = points;
         // Add edge to vertices hashSets
         vertexA.GetComponent<Vertex>().addEdge(newEdgeGameObject);
         vertexB.GetComponent<Vertex>().addEdge(newEdgeGameObject);
