@@ -10,6 +10,7 @@ public class DragController : MonoBehaviour
     private Vector2 _screenPosition;
     private Vector3 _worldPosition;
     private Draggable _lastDragged;
+    [SerializeField] private LayerMask _layerMask;
 
     public static DragController Instance
     {
@@ -55,7 +56,7 @@ public class DragController : MonoBehaviour
         // Else, user might just be starting dragging, try to find Draggable object
         else
         {
-            RaycastHit2D hit = Physics2D.Raycast(new Vector2(_worldPosition.x, _worldPosition.y), Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(new Vector2(_worldPosition.x, _worldPosition.y), Vector2.zero, 5, _layerMask);
             if (hit.collider != null)
             {
                 Draggable draggable = hit.transform.gameObject.GetComponent<Draggable>();

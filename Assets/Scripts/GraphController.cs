@@ -108,7 +108,7 @@ public class GraphController : MonoBehaviour
         // Calculate new vertex position
         int x = verticeID % xSize;
         int y = verticeID / xSize;
-        GameObject newVerticeGameObject = Instantiate(vertexPrefab, new Vector3(x * increment, y * increment, 0f), Quaternion.identity);
+        GameObject newVerticeGameObject = Instantiate(vertexPrefab, new Vector3(x * increment, y * increment, 0), Quaternion.identity);
         newVerticeGameObject.GetComponent<Vertex>().Id = verticeID;
         newVerticeGameObject.GetComponent<Vertex>().Edges = new HashSet<GameObject>();
         // Vertices are children of the graph

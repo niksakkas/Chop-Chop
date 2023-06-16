@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1496111321442301391}
   - component: {fileID: -164078109111104243}
   - component: {fileID: -2512196527450984273}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Vertex
   m_TagString: Untagged
   m_Icon: {fileID: 0}
