@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -162,23 +163,23 @@ public class GraphController : MonoBehaviour
             return;
         }
         List<GameObject> subGraphB = FindSecondSubGraph(subGraphA);
-        Debug.Log("Subgraph A:");
-        logGraph(subGraphA);
-        Debug.Log("Subgraph B:");
-        logGraph(subGraphB);
+        //Debug.Log("Subgraph A:");
+        //logGraph(subGraphA);
+        //Debug.Log("Subgraph B:");
+        //logGraph(subGraphB);
 
         if (subGraphA.Count > subGraphB.Count) {
             Debug.Log("graph A bigger");
-            removeSubGraph(subGraphB);
-            Debug.Log("Graph:");
-            logGraph(graph);
+            StartCoroutine(removeSubGraph(subGraphB));
+            //Debug.Log("Graph:");
+            //logGraph(graph);
         }
         else if(subGraphA.Count < subGraphB.Count)
         {
             Debug.Log("graph B bigger");
-            removeSubGraph(subGraphA);
-            Debug.Log("Graph:");
-            logGraph(graph);
+            StartCoroutine(removeSubGraph(subGraphA));
+            //Debug.Log("Graph:");
+            //logGraph(graph);
         }
         else
         {
@@ -193,22 +194,24 @@ public class GraphController : MonoBehaviour
         Destroy(edge);
     }
 
-    public void removeVertex(GameObject vertex)
+    public IEnumerator removeVertex(GameObject vertex)
     {
         HashSet<GameObject> edges = vertex.GetComponent<Vertex>().Edges;
-
+        yield return new WaitForSeconds(1f);
         foreach (GameObject edge in edges.ToList())
         {
+            yield return new WaitForSeconds(1f);
             removeEdge(edge);
         }
         graph.Remove(vertex);
         Destroy(vertex);
     }
-    public void removeSubGraph(List<GameObject> subGraph)
+    public IEnumerator removeSubGraph(List<GameObject> subGraph)
     {
         foreach(GameObject vertex in subGraph)
         {
-            removeVertex(vertex);
+            StartCoroutine(removeVertex(vertex));
+            yield return new WaitForSeconds(1f);
         }
     }
     public List<GameObject> FindPathOrSubgraph(GameObject verticeA, GameObject verticeB)
