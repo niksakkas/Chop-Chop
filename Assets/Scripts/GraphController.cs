@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GraphController : MonoBehaviour
@@ -20,7 +21,7 @@ public class GraphController : MonoBehaviour
     [SerializeField] GameObject edgesParent;
 
     // graph
-    List<GameObject> vertices = new List<GameObject>();
+    List<GameObject> graph = new List<GameObject>();
 
     // Singleton instance
     private static GraphController _instance;
@@ -113,19 +114,19 @@ public class GraphController : MonoBehaviour
         newVerticeGameObject.GetComponent<Vertex>().Edges = new HashSet<GameObject>();
         // Vertices are children of the graph
         newVerticeGameObject.transform.parent = verticesParent.transform;
-        vertices.Add(newVerticeGameObject);
+        graph.Add(newVerticeGameObject);
     }
     void createEdges()
     {
         // Iterating through the graph using foreach loop
-        foreach (GameObject vertex in vertices)
+        foreach (GameObject vertex in graph)
         {
-            int randomIndex = UnityEngine.Random.Range(0, vertices.Count);
-            while(vertices[randomIndex] == vertex || vertex.GetComponent<Vertex>().Edges.Any(edge => edge.GetComponent<Edge>().StartVertex == vertices[randomIndex] || edge.GetComponent<Edge>().EndVertex == vertices[randomIndex]))
+            int randomIndex = UnityEngine.Random.Range(0, graph.Count);
+            while(graph[randomIndex] == vertex || vertex.GetComponent<Vertex>().Edges.Any(edge => edge.GetComponent<Edge>().StartVertex == graph[randomIndex] || edge.GetComponent<Edge>().EndVertex == graph[randomIndex]))
             {
-                randomIndex = UnityEngine.Random.Range(0, vertices.Count);
+                randomIndex = UnityEngine.Random.Range(0, graph.Count);
             }
-            GameObject randomVertex = vertices[randomIndex];
+            GameObject randomVertex = graph[randomIndex];
             createEdge(vertex, randomVertex);
         }
     }
@@ -153,6 +154,37 @@ public class GraphController : MonoBehaviour
         vertexA.GetComponent<Vertex>().addEdge(newEdgeGameObject);
         vertexB.GetComponent<Vertex>().addEdge(newEdgeGameObject);
     }
+    public void playerChop(GameObject edge) {
+        
+        removeEdge(edge);
+        List<GameObject> subGraphA = FindPathOrSubgraph(edge.GetComponent<Edge>().StartVertex, edge.GetComponent<Edge>().EndVertex);
+        if(subGraphA == null) {
+            return;
+        }
+        List<GameObject> subGraphB = FindSecondSubGraph(subGraphA);
+        Debug.Log("Subgraph A:");
+        logGraph(subGraphA);
+        Debug.Log("Subgraph B:");
+        logGraph(subGraphB);
+
+        if (subGraphA.Count > subGraphB.Count) {
+            Debug.Log("graph A bigger");
+            removeSubGraph(subGraphB);
+            Debug.Log("Graph:");
+            logGraph(graph);
+        }
+        else if(subGraphA.Count < subGraphB.Count)
+        {
+            Debug.Log("graph B bigger");
+            removeSubGraph(subGraphA);
+            Debug.Log("Graph:");
+            logGraph(graph);
+        }
+        else
+        {
+            Debug.Log("graphs are of the same size");
+        }
+    }
 
     public void removeEdge(GameObject edge)
     {
@@ -160,10 +192,76 @@ public class GraphController : MonoBehaviour
         edge.GetComponent<Edge>().EndVertex.GetComponent<Vertex>().Edges.Remove(edge);
         Destroy(edge);
     }
-    void logGraph()
+
+    public void removeVertex(GameObject vertex)
+    {
+        HashSet<GameObject> edges = vertex.GetComponent<Vertex>().Edges;
+
+        foreach (GameObject edge in edges.ToList())
+        {
+            removeEdge(edge);
+        }
+        graph.Remove(vertex);
+        Destroy(vertex);
+    }
+    public void removeSubGraph(List<GameObject> subGraph)
+    {
+        foreach(GameObject vertex in subGraph)
+        {
+            removeVertex(vertex);
+        }
+    }
+    public List<GameObject> FindPathOrSubgraph(GameObject verticeA, GameObject verticeB)
+    {
+        if (verticeA == verticeB)
+        {
+            return new List<GameObject>() { verticeA };
+        }
+        List<GameObject> visited = new List<GameObject>();
+        Stack<GameObject> stack = new Stack<GameObject>();
+        stack.Push(verticeA);
+        visited.Add(verticeA);
+
+        while (stack.Count > 0)
+        {
+            GameObject currentVertex = stack.Pop();
+            if (currentVertex == verticeB)
+            {
+                return null;
+            }
+            Vertex currentVertexScript = currentVertex.GetComponent<Vertex>();
+            foreach (GameObject edge in currentVertexScript.Edges)
+            {
+                GameObject neighborVertex = edge.GetComponent<Edge>().StartVertex;
+                if (neighborVertex == currentVertex)
+                {
+                    neighborVertex = edge.GetComponent<Edge>().EndVertex;
+                }
+                if (!visited.Contains(neighborVertex))
+                {
+                    stack.Push(neighborVertex);
+                    visited.Add(neighborVertex);
+                }
+            }
+        }
+        return visited;
+    }
+
+    public List<GameObject> FindSecondSubGraph(List<GameObject> firstSubGraph)
+    {
+        List<GameObject> secondSubGraph = new List<GameObject>();
+        graph.ForEach(graphVertice =>
+        {
+            if (!firstSubGraph.Contains(graphVertice)) {
+                secondSubGraph.Add(graphVertice);
+            }
+        }); 
+        return secondSubGraph;
+    }
+    void logGraph(List<GameObject> graph)
     {
         // For every vertice
-        vertices.ForEach(vertex =>
+        graph.ForEach(vertex =>
         {
             Vertex vertexScript = vertex.GetComponent<Vertex>();
             // Get vertice id

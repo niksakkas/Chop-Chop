@@ -18,7 +18,7 @@ public class ChopController : MonoBehaviour
         {
             if (hit.collider.CompareTag("Edge"))
             {   
-                graphController.removeEdge(hit.collider.gameObject);
+                graphController.playerChop(hit.collider.gameObject);
             }
         }
     }
