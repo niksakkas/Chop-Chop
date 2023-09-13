@@ -23,7 +23,10 @@ public class GraphController : MonoBehaviour
 
     // graph
     List<GameObject> graph = new List<GameObject>();
+    List<GameObject> subGraph1 = new List<GameObject>();
+    List<GameObject> subGraph2 = new List<GameObject>();
 
+    [SerializeField] GameStateController gameStateController;
     // Singleton instance
     private static GraphController _instance;
 
@@ -98,6 +101,7 @@ public class GraphController : MonoBehaviour
         Array.Sort(positions);
         return positions;
     }
+
     void createVertices(int[] verticePositions)
     {
         for (int i = 0; i < verticePositions.Length; i++)
@@ -105,6 +109,7 @@ public class GraphController : MonoBehaviour
             createVertex(verticePositions[i]);
         }
     }
+
     void createVertex(int verticeID)
     {   
         // Calculate new vertex position
@@ -117,6 +122,7 @@ public class GraphController : MonoBehaviour
         newVerticeGameObject.transform.parent = verticesParent.transform;
         graph.Add(newVerticeGameObject);
     }
+
     void createEdges()
     {
         // Iterating through the graph using foreach loop
@@ -131,6 +137,7 @@ public class GraphController : MonoBehaviour
             createEdge(vertex, randomVertex);
         }
     }
+
     void createEdge(GameObject vertexA, GameObject vertexB)
     {
         //Create edge
@@ -155,7 +162,13 @@ public class GraphController : MonoBehaviour
         vertexA.GetComponent<Vertex>().addEdge(newEdgeGameObject);
         vertexB.GetComponent<Vertex>().addEdge(newEdgeGameObject);
     }
+
     public void playerChop(GameObject edge) {
+
+        //chop only if the game state allows for it
+        if (gameStateController.gameState != GameState.chopping){
+            return;
+        };
         
         removeEdge(edge);
         List<GameObject> subGraphA = FindPathOrSubgraph(edge.GetComponent<Edge>().StartVertex, edge.GetComponent<Edge>().EndVertex);
@@ -184,7 +197,30 @@ public class GraphController : MonoBehaviour
         else
         {
             Debug.Log("graphs are of the same size");
+            gameStateController.gameState = GameState.selecting;
+            colorSubgraph(subGraphA, Color.blue);
+            colorSubgraph(subGraphB, Color.red);
+            subGraph1 = subGraphA;
+            subGraph2 = subGraphB;
         }
+    }
+
+    public void playerSelect(GameObject edge)
+    {
+        if(gameStateController.gameState != GameState.selecting)
+        {
+            return;
+        }
+        
+        if (subGraph1.Contains(edge.GetComponent<Edge>().StartVertex)){
+            StartCoroutine(removeSubGraph(subGraph1));
+        }
+        else
+        {
+            StartCoroutine(removeSubGraph(subGraph2));
+        }
+        colorSubgraph(graph, Color.black);
+        gameStateController.gameState = GameState.selecting;
     }
 
     public void removeEdge(GameObject edge)
@@ -206,6 +242,7 @@ public class GraphController : MonoBehaviour
         graph.Remove(vertex);
         Destroy(vertex);
     }
+
     public IEnumerator removeSubGraph(List<GameObject> subGraph)
     {
         foreach(GameObject vertex in subGraph)
@@ -214,6 +251,7 @@ public class GraphController : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
     }
+
     public List<GameObject> FindPathOrSubgraph(GameObject verticeA, GameObject verticeB)
     {
         if (verticeA == verticeB)
@@ -261,6 +299,20 @@ public class GraphController : MonoBehaviour
         }); 
         return secondSubGraph;
     }
+
+    void colorSubgraph(List<GameObject> subGraph, Color color)
+    {
+        subGraph.ForEach(graphVertice =>
+        {
+            graphVertice.GetComponent<Renderer>().material.SetColor("_Color", color);
+            foreach (GameObject edge in graphVertice.GetComponent<Vertex>().Edges)
+            {
+                edge.GetComponent<LineRenderer>().endColor = color;
+                edge.GetComponent<LineRenderer>().startColor = color;
+            }
+        });
+    }
+
     void logGraph(List<GameObject> graph)
     {
         // For every vertice

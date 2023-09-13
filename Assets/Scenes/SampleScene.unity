@@ -123,6 +123,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &453111643
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 453111645}
+  - component: {fileID: 453111644}
+  m_Layer: 0
+  m_Name: GameStateController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &453111644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453111643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18932f64fad899b43af2fbd950a2f853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameState: 0
+--- !u!4 &453111645
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453111643}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.54978544, y: -1.3207994, z: -5.522764}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,14 +473,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 1688406f4d55cc04285301f23d7b4b52, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 1
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1071766903}
         m_TargetAssemblyTypeName: ChopController, Assembly-CSharp
-        m_MethodName: Chop
+        m_MethodName: OnChop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -473,6 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d51b40c314245458282bccd3e75d2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameStateController: {fileID: 453111644}
   _layerMask:
     serializedVersion: 2
     m_Bits: 0
@@ -544,6 +590,7 @@ MonoBehaviour:
   edgePrefab: {fileID: 814295287154197503, guid: 24dbae35cac2a3149b0e025ebe37599e, type: 3}
   verticesParent: {fileID: 1670452507}
   edgesParent: {fileID: 1044975528}
+  gameStateController: {fileID: 453111644}
 --- !u!1 &1670452507
 GameObject:
   m_ObjectHideFlags: 0
@@ -632,6 +679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75d51b40c314245458282bccd3e75d2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameStateController: {fileID: 453111644}
   _layerMask:
     serializedVersion: 2
     m_Bits: 128
