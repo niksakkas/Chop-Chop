@@ -207,20 +207,18 @@ public class GraphController : MonoBehaviour
 
     public void playerSelect(GameObject edge)
     {
-        if(gameStateController.gameState != GameState.selecting)
+        if(gameStateController.gameState == GameState.selecting)
         {
-            return;
-        }
-        
+       
         if (subGraph1.Contains(edge.GetComponent<Edge>().StartVertex)){
-            StartCoroutine(removeSubGraph(subGraph1));
+            StartCoroutine(removeSubGraph(subGraph1, true));
         }
         else
         {
-            StartCoroutine(removeSubGraph(subGraph2));
+            StartCoroutine(removeSubGraph(subGraph2, true));
         }
-        colorSubgraph(graph, Color.black);
-        gameStateController.gameState = GameState.selecting;
+        gameStateController.gameState = GameState.chopping;
+        }
     }
 
     public void removeEdge(GameObject edge)
@@ -249,6 +247,18 @@ public class GraphController : MonoBehaviour
         {
             StartCoroutine(removeVertex(vertex));
             yield return new WaitForSeconds(1f);
+        }
+    }
+    public IEnumerator removeSubGraph(List<GameObject> subGraph, bool recolor)
+    {
+        foreach (GameObject vertex in subGraph)
+        {
+            StartCoroutine(removeVertex(vertex));
+            yield return new WaitForSeconds(1f);
+        }
+        if (recolor)
+        {
+            colorSubgraph(graph, Color.black);
         }
     }
 
